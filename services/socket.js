@@ -1,12 +1,12 @@
-import chalk from "chalk";
+import { httpServer } from "../main.js";
 import { Server } from "socket.io";
 
 export default {
-    start(server) {
-        const io = new Server(server);
+    start() {
+        const io = new Server(httpServer);
 
         io.on("connection", (socket) => {
-            console.log(chalk.black.bgBlueBright("Client connection has been established!"));
+            console.log(`[${new Date().toISOString()}] socket-server: A new connection has been established`);
         })
     }
 }
