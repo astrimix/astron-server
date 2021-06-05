@@ -12,14 +12,22 @@ const app = express();
 const httpServer = createServer(app);
 
 // Initialize MongoDB, Socket.io and API Middlewares & Router
-mongo.start();
-middleware.use();
-passport();
-router.create();
-socket.start(httpServer);
+async function init() {
+    //await Promise.all([middleware.use(), passport(), router.create(), socket.start(httpServer)])
+    await mongo.start();
+    middleware.use();
+    passport();
+    router.create();
+    socket.start(httpServer);
+}
 
-httpServer.listen(3000);
-
-console.log(`[${strings.date}] ${strings.server_start}`);
+init().then(() => {
+    httpServer.listen(3000);
+    console.log(`[${strings.date}] ${strings.server_start}`);
+})
+.catch((error) => {
+    console.log(`[${strings.date}] ${strings.error} ${error.stack}`);
+    process.exit();
+})
 
 export { app, httpServer };
