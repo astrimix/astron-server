@@ -1,3 +1,4 @@
+import { strings } from "../constants/consoleStrings.js";
 import passport from "passport";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import userModel from "../models/user.model.js";
@@ -27,7 +28,7 @@ function verifyPayload(jwt_payload, done) {
 export default () => {
     passport.use(new JwtStrategy(opts, verifyPayload));
 
-    return console.log(`[${new Date().toISOString()}] passport: JWT initalized`)
+    return console.log(`[${strings.date}] ${strings.jwt_start}`)
 }
 
 export { opts };

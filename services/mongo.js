@@ -1,4 +1,6 @@
+import { strings } from "../constants/consoleStrings.js";
 import mongoose from 'mongoose';
+import chalk from "chalk";
 
 export default {
     start () {
@@ -23,22 +25,25 @@ export default {
                 user: "admin",
                 password: "admin"
             },
-        });
+        }).catch((error) => {
+            console.log(`[${strings.date}] ${strings.mongoose_error} ${chalk.gray(error.stack)}`);
+            process.exit();
+        })
 
         mongoose.set("useFindAndModify", false);
         mongoose.Promise = global.Promise;
 
         mongoose.connection.on('connected', () => {
-            console.log(`[${new Date().toISOString()}] mongoose: Connection accepted!`);
+            console.log(`[${strings.date}] ${strings.mongoose_accept}`)
         });
         
-        mongoose.connection.on('err', err => {
-            console.log(`[${new Date().toISOString()}] mongoose: Connection error on stack: \n ${err.stack}`);
+        mongoose.connection.on('error', error => {
+            console.log(`[${strings.date}] ${strings.error} ${chalk.gray(error.stack)}`)
             process.exit();
         });
         
         mongoose.connection.on('disconnected', () => {
-            console.log(`[${new Date().toISOString()}] mongoose: Connection closed`);
+            console.log(`[${strings.date}] ${strings.mongoose_close}`)
         });
     }
 }

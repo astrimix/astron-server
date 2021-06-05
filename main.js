@@ -1,3 +1,4 @@
+import { strings } from "./constants/consoleStrings.js";
 import middleware from "./services/middleware.js";
 import socket from "./services/socket.js";
 import mongo from "./services/mongo.js";
@@ -19,6 +20,6 @@ socket.start(httpServer);
 
 httpServer.listen(3000);
 
-console.log(`[${new Date().toISOString()}] node: Server running on port *:3000!`);
+console.log(`[${strings.date}] ${strings.server_start}`);
 
 export { app, httpServer };
