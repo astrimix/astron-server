@@ -6,12 +6,13 @@ export default () => {
 
     // GET /users/:_id
     api.get("/:_id", userController.findById);
-    // GET /users
-    api.get("/", userController.findAll);
-    // POST /users
-    //api.post("/", userController.insert);
+
+    // GET /users/:_id/guilds
+    api.get("/:_id/guilds", userController.findGuilds);
+
     // PATCH /users/:_id
     api.patch("/:_id", userController.update);
+
     // DELETE /users/:_id
     api.delete("/:_id", userController.delete);
 

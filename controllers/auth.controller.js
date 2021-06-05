@@ -4,7 +4,9 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 
 export default {
-    async login(req, res) {    
+    async login(req, res) {
+        console.log(req.body)
+
         const token = jwt.sign(req.body, opts.secretOrKey, { expiresIn: 1200 });
 
         return res.status(200).send({ token });
