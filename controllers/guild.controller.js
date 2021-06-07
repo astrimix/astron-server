@@ -53,5 +53,16 @@ export default {
     },
 
     async findById(req, res) {
+        await guildModel.findById(req.params._id)
+        .catch(error => {
+            return res.status(404).send(error);
+        })
+        .then(result => {
+            return res.status(200).send(result);
+        })
+    },
+
+    async update(req, res) {
+
     }
 }

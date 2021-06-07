@@ -10,5 +10,8 @@ export default () => {
     // POST /guilds
     api.post("/", guildController.create)
 
+    // PATCH /guilds
+    api.patch("/", guildController.update);
+
     return api;
 }
