@@ -5,13 +5,16 @@ export default () => {
     const api = Router();
 
     // GET /guilds/:_id
-    api.get("/:_id", guildController.findById)
+    api.get("/:_id", guildController.findById);
 
     // POST /guilds
-    api.post("/", guildController.create)
+    api.post("/", guildController.create);
 
-    // PATCH /guilds
-    api.patch("/", guildController.update);
+    // PATCH /guilds/:_id
+    api.patch("/:_id", guildController.update);
+
+    // DELETE /guilds/:_id
+    api.delete("/:_id", guildController.delete)
 
     return api;
 }

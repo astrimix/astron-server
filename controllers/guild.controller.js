@@ -54,6 +54,7 @@ export default {
 
     async findById(req, res) {
         await guildModel.findById(req.params._id)
+        .exec()
         .catch(error => {
             return res.status(404).send(error);
         })
@@ -63,6 +64,32 @@ export default {
     },
 
     async update(req, res) {
+        await guildModel.findByIdAndUpdate(req.params._id, {
+            $set: req.body
+        })
+        .exec()
+        .catch(error => {
+            return res.status(404).send(error);
+        })
+        .then(result => {
+            return res.status(200).send({
+                result,
+                message: `Guild ${result._id} has been successfully updated.`
+            })
+        })
+    },
 
+    async delete(req, res) {
+        await guildModel.findByIdAndDelete(req.params._id)
+        .exec()
+        .catch(error => {
+            return res.status(404).send(error);
+        })
+        .then(result => {
+            return res.status(200).send({
+                result,
+                message: `Guild ${result._id} has been successfully deleted.`
+            })
+        })
     }
 }
