@@ -3,24 +3,23 @@ import guildModel from "../models/guild.model.js";
 import crypto from "crypto";
 
 export default {
-    async findAll(req, res) {
-        await userModel.find().exec()
-        .then((result) => {
+
+    findById(req, res) {
+        userModel.findById(req.params._id, (error, result) => {
+            if (error) return res.status(404).send(error);
             res.status(200).send(result);
         })
-        .catch((error) => {
-            res.status(404).send(error);
-        });
     },
 
-    async findById(req, res) {
-        await userModel.findById(req.params._id).exec()
-        .then((result) => {
+    // findGuilds(req, res) {
+    //     guildModel.find({ })
+    // },
+
+    findAll(req, res) {
+        userModel.find((error, result) => {
+            if (error) return res.status(404).send(error);
             res.status(200).send(result);
         })
-        .catch((error) => {
-            res.status(404).send(error);
-        });
     },
 
     update(req, res) {
@@ -39,23 +38,11 @@ export default {
         })
     },
     
-    async delete(req, res) {
-        await userModel.findByIdAndDelete(req.params._id).exec()
-        .then((result) => {
+    delete(req, res) {
+        userModel.findByIdAndDelete(req.params._id, (error, result) => {
+            if (error) res.status(400).send(error);
             res.status(200).send({ result, message: `Document ${req.params._id} has been deleted.` })
         })
-        .catch((error) =>{
-            res.status(400).send(error);
-        });
     },
 
-    async findGuilds(req, res) {
-        await guildModel.find().exec()
-        .then((result) => {
-            res.status(200).send({ result });
-        })
-        .catch((error) => {
-            res.status(400).send(error);
-        })
-    }
 }

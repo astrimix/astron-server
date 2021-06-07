@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { memberSchema } from "./guild/member.model.js";
 
 const guildSchema = mongoose.Schema({
     name: {
@@ -7,20 +8,14 @@ const guildSchema = mongoose.Schema({
     },
     icon_hash: String,
     owner_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        type: String,
         required: true
     },
     channels: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Channel",
-        //required: true
     }],
-    members: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Member",
-        //required: true
-    }]
+    members: [memberSchema]
 }, {
     timestamps: {
         createdAt: "created_at",

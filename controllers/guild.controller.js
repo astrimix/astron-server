@@ -1,56 +1,57 @@
-import guildModel from "../models/guild.model.js";
 import jwt_decode from "jwt-decode";
-import memberModel from "../models/guild/member.model.js";
+import guildModel from "../models/guild.model.js";
+import channelModel from "../models/channel.model.js";
+import mongoose from "mongoose";
 
 export default {
-    async findById(req, res) {
-        await guildModel.findById(req.params._id).populate("owner_id").exec()
-        .then((result) => {
-            res.status(200).send(result);
-        })
-        .catch((error) => {
-            res.status(404).send(error);
-        });
-    },
-
-    insert(req, res) {
+    async create(req, res) {
         let decoded = jwt_decode(req.headers.authorization.split(' ')[1]);
-        let guildId;
+        let guildId = mongoose.Types.ObjectId();
+        let channelsIds;
 
-        guildModel.create({
+        await channelModel.insertMany([
+            { name: "general", guild_id: guildId },
+            { name: "off-topic", guild_id: guildId }
+        ]);
+
+        await channelModel.find({ guild_id: guildId }, "_id", (error, result) => {
+            if (error) return console.log(error);
+            return channelsIds = result;
+        })
+
+        let guild = await guildModel.create({
+            _id: guildId,
             name: req.body.name,
             owner_id: decoded.id,
-        }, (error, doc) => {
-            if (error) return res.status(400).send(error);
+            members: [{
+                user: {
+                    _id: decoded.id
+                },
+            }],
+            channels: channelsIds
+        }).catch(error => {
+            return console.log(error);
+        })
 
-            guildId = doc.id;
-            memberModel.create({
-                user_id: doc.id
-            }, (error, doc) => {
-                if (error) return res.status(400).send(error);
-                guildModel.findByIdAndUpdate(guildId, { $push: {
-                    members: doc
-                }}).catch((error) => {
-                    return res.status(400).send(error);
-                })
-            })
+        guild = await guild.populate({
+            path: "members",
+            populate: { 
+                path: "user",
+                select: "-password"
+            }
         })
-    },
-
-    update(req, res) {
-        guildModel.findByIdAndUpdate(req.params._id, { $set: req.body }, (error, result) => {
-            if (error) return res.status(400).send(error);
-            return res.status(200).send(result);
+        .populate("channels")
+        .execPopulate()
+        .then(result => {
+            console.log(result);
+            return res.status(201).send(result);
         })
-    },
-    
-    async delete(req, res) {
-        await guildModel.findByIdAndDelete(req.params._id).exec()
-        .then((result) => {
-            res.status(201).send({ result, message: `Guild ${req.params._id} has been deleted.` })
-        })
-        .catch((error) =>{
+        .catch(error => {
             res.status(400).send(error);
-        });
+            return console.log(error);
+        })
+    },
+
+    async findById(req, res) {
     }
 }

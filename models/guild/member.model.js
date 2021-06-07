@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const memberSchema = mongoose.Schema({
-    user_id: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Users"
+        ref: "User"
     },
     nickname: String,
     avatar_hash: String
@@ -14,4 +14,5 @@ const memberSchema = mongoose.Schema({
     versionKey: "version"
 });
 
-export default mongoose.model("Members", memberSchema);
+//export default mongoose.model("Member", memberSchema);
+export { memberSchema };

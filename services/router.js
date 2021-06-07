@@ -11,7 +11,8 @@ export default {
     create() {
         app.use(`/api/${api_version}/auth`, authRouter());
         app.use(`/api/${api_version}/users`, passport.authenticate("jwt", { session: false }), userRouter());
-        app.use(`/api/${api_version}/guilds`, passport.authenticate("jwt", { session: false }), guildRouter());
+        //app.use(`/api/${api_version}/guilds`, passport.authenticate("jwt", { session: false }), guildRouter());
+        app.use(`/api/${api_version}/guilds`, guildRouter());
 
         return console.log(`[${strings.date}] ${strings.express_router}`)
     }

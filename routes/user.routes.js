@@ -8,7 +8,7 @@ export default () => {
     api.get("/:_id", userController.findById);
 
     // GET /users/:_id/guilds
-    api.get("/:_id/guilds", userController.findGuilds);
+    //api.get("/:_id/guilds", userController.findGuilds);
 
     // PATCH /users/:_id
     api.patch("/:_id", userController.update);
