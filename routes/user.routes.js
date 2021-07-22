@@ -4,17 +4,62 @@ import userController from "../controllers/user.controller.js";
 export default () => {
     const api = Router();
 
-    // GET /users/:_id
-    api.get("/:_id", userController.findById);
+    /**
+     * GET /users/@me
+     * * Scope: Any
+     */
+    api.get("/@me", userController.findMe);
 
-    // GET /users/:_id/guilds
-    //api.get("/:_id/guilds", userController.findGuilds);
+    /**
+     * GET /users/_id
+     * * Scope: Any
+     */
+    api.get("/:_id", userController.findUserById);
 
-    // PATCH /users/:_id
-    api.patch("/:_id", userController.update);
+    /**
+     * GET /users/@me/guilds
+     * * Scope: Any
+     */
+    api.get("/@me/guilds", userController.findMyGuilds);
 
-    // DELETE /users/:_id
-    api.delete("/:_id", userController.delete);
+    /**
+     * PATCH /users/@me
+     * * Scope: Any
+     * @param username, @param avatar 
+     */
+    api.patch("/@me", userController.updateMe);
+
+    /**
+     * DELETE /users/@me/guilds/_id
+     * * Scope: Any
+     */
+    api.delete("/@me/guilds/:_id", userController.deleteFromGuild);
+
+
+    // ! Administrator Endpoints
+    /**
+     * GET /users/_id/guilds
+     * * Scope: Administrator
+     */
+    api.get("/:_id/guilds", userController.findUserGuilds);
+
+    /**
+     * GET /users/_id/guilds/_id
+     * * Scope: Administrator
+     */
+    api.get("/:_id/guilds/:_id", userController.findGuildById);
+
+    /**
+     * PATCH /users/_id
+     * * Scope: Administrator
+     */
+    api.patch("/:_id", userController.updateUser);
+
+    /**
+     * DELETE /users/_id
+     * * Scope: Administator
+     */
+    api.delete("/:_id", userController.deleteUser);
 
     return api;
 }

@@ -5,6 +5,8 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    discriminator: Number,
+    avatar_hash: String,
     email: {
         type: String,
         unique: true,
@@ -15,9 +17,7 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
-    },
-    discriminator: Number,
-    avatar_hash: String
+    }
 }, {
     timestamps: {
         createdAt: "created_at",
