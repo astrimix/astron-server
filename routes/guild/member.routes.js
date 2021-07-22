@@ -1,5 +1,5 @@
 import { Router } from "express";
-import memberController from "../../controllers/guild/member.controller.js";
+import memberController from "#app/controllers/guild/member.controller.js";
 
 export default () => {
     const api = Router({

@@ -1,9 +1,9 @@
 import { strings } from "../constants/consoleStrings.js";
 import { app } from "../main.js";
-import passport from "passport";
 import userRouter from "../routes/user.routes.js";
 import guildRouter from "../routes/guild.routes.js";
 import authRouter from "../routes/auth.routes.js";
+import passport from "passport";
 
 const api_version = "v1";
 

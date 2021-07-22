@@ -1,4 +1,4 @@
-import { strings } from "../constants/consoleStrings.js";
+import { strings } from "#app/constants/consoleStrings.js";
 import mongoose from 'mongoose';
 import chalk from "chalk";
 

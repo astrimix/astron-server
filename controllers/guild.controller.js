@@ -15,7 +15,10 @@ export default {
         ]);
 
         await channelModel.find({ guild_id: guildId }, "_id", (error, result) => {
-            if (error) return console.log(error);
+            if (error) {
+                console.log(error);
+                return;
+            }
             return channelsIds = result;
         })
 
@@ -30,7 +33,8 @@ export default {
             }],
             channels: channelsIds
         }).catch(error => {
-            return console.log(error);
+            console.log(error);
+            return;
         })
 
         guild = await guild.populate({
@@ -47,8 +51,8 @@ export default {
             return res.status(201).send(result);
         })
         .catch(error => {
-            res.status(400).send(error);
-            return console.log(error);
+            console.log(error);
+            return res.status(400).send(error);
         })
     },
 

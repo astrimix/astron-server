@@ -11,7 +11,7 @@ import { createServer } from "http";
 const app = express();
 const httpServer = createServer(app);
 
-// Initialize MongoDB, Socket.io and API Middlewares & Router
+// * Initialize MongoDB, Socket.io and API Middlewares & Router
 async function init() {
     //await Promise.all([middleware.use(), passport(), router.create(), socket.start(httpServer)])
     await mongo.start();
