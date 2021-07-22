@@ -1,7 +1,7 @@
-import userModel from "../models/user.model.js";
+import { createPassword } from "../services/helpers.js";
 import { opts } from "../services/passport.js";
+import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 
 export default {
     async login(req, res) {
@@ -13,12 +13,7 @@ export default {
     },
 
     async register(req, res) {
-        let salt = crypto.randomBytes(16).toString("base64");
-        let hash = crypto.createHmac("sha512", salt)
-            .update(req.body.password)
-            .digest("base64");
-        
-        req.body.password = salt + "$" + hash;
+        createPassword(req);
 
         userModel.create(req.body)
         .then((result) => {

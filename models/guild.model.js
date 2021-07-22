@@ -6,16 +6,24 @@ const guildSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    icon_hash: String,
+    icon: String,
     owner_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
+    permissions: Array,
+    roles: Array,
+    emojis: Array,
+    system_channel_id: mongoose.Schema.Types.ObjectId,
+    member_count: Number,
+    members: [memberSchema],
     channels: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Channel",
     }],
-    members: [memberSchema]
+    max_members: Number,
+    vanity_url: String,
+    banner: String
 }, {
     timestamps: {
         createdAt: "created_at",

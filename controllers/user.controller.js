@@ -1,69 +1,57 @@
-import userModel from "../models/user.model.js";
-import guildModel from "../models/guild.model.js";
-import jwtDecode from "jwt-decode";
-import crypto from "crypto";
+import { createPassword } from "../services/helpers.js";
+import User from "../models/user.model.js";
+import Guild from "../models/guild.model.js";
+import JwtDecode from "jwt-decode";
+
+function getMe(request) {
+    return JwtDecode(request.headers.authorization.split(' ')[1]).id;
+}
 
 export default {
-    findMe(req, res) {
-        userModel.findById(jwtDecode(req.headers.authorization.split(' ')[1]).id, (error, result) => {
-            if (error) return res.status(500).send(error);
-            return res.status(200).send(result);
-        })
+    async findMe(req, res) {
+        await User.findById(getMe(req))
+        .then(result => res.status(200).send(result))
+        .catch(error => res.status(500).send(error));
     },
 
-    findUserById(req, res) {
-        userModel.findById(req.params._id, (error, result) => {
-            if (error) return res.status(500).send(error);
+    async findUserById(req, res) {
+        await User.findById(req.params._id)
+        .then(result => {
             if (result == null) return res.status(404);
-            return res.status(200).send(result);
+            return res.status(200).send(result)
         })
+        .catch(error => res.status(500).send(error));
     },
 
-    findAllUsers(req, res) {
-        userModel.find((error, result) => {
-            if (error) return res.status(500).send(error);
-            res.status(200).send(result);
-        })
+    async findAllUsers(req, res) {
+        await User.find()
+        .then(result => res.status(200).send(result))
+        .catch(error => res.status(500).send(error));
     },
 
-    updateMe(req, res) {
-        if (req.body.password != null) {
-            let salt = crypto.randomBytes(16).toString("base64");
-            let hash = crypto.createHmac("sha512", salt)
-                .update(req.body.password)
-                .digest("base64");
-            
-            req.body.password = salt + "$" + hash;    
-        }
+    async updateMe(req, res) {
+        if (req.body.password != null) createPassword(req);
 
-        userModel.findByIdAndUpdate(jwtDecode(req.headers.authorization.split(' ')[1]).id, { $set: req.body }, { new: true }, (error, result) => {
-            if (error) return res.status(500).send(error);
-            return res.status(200).send(result);
-        })
+        await User.findByIdAndUpdate(getMe(req), { $set: req.body }, { new: true })
+        .then(result => res.status(200).send(result))
+        .catch(error => res.status(500).send(error));
     },
 
-    updateUser(req, res) {
-        if (req.body.password != null) {
-            let salt = crypto.randomBytes(16).toString("base64");
-            let hash = crypto.createHmac("sha512", salt)
-                .update(req.body.password)
-                .digest("base64");
-            
-            req.body.password = salt + "$" + hash;    
-        }
+    async updateUser(req, res) {
+        if (req.body.password != null) createPassword(req);
 
-        userModel.findByIdAndUpdate(req.params._id, { $set: req.body }, (error, result) => {
-            if (error) return res.status(500).send(error);
-            return res.status(200).send(result);
-        })
+        await User.findByIdAndUpdate(req.params._id, { $set: req.body })
+        .then(result => res.status(200).send(result))
+        .catch(error => res.status(500).send(error));
     },
     
-    deleteUser(req, res) {
-        userModel.findByIdAndDelete(req.params._id, (error, result) => {
-            if (error) res.status(500).send(error);
-            res.status(200).send({ result, message: `User ${req.params._id} has been deleted.` })
-        })
+    async deleteUser(req, res) {
+        User.findByIdAndDelete(req.params._id)
+        .then(result => res.status(200).send({ result, message: `User ${req.params._id} has been deleted.` }))
+        .catch(error => res.status(500).send(error));
     },
+
+    // TODO: Finish the rest of the requests
 
     findMyGuilds(req, res) {
         return res.status(500).send("WIP");
