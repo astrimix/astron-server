@@ -1,5 +1,6 @@
 import Guild from "../models/guild.model.js";
 import Channel from "../models/channel.model.js";
+
 import JwtDecode from "jwt-decode";
 import mongoose from "mongoose";
 
@@ -51,7 +52,7 @@ export default {
     },
 
     async findGuild(req, res) {
-        await Guild.findById(req.params._id)
+        await Guild.findById(req.params.id)
         .exec()
         .then(result => {
             if (result == null) return res.status(404);
@@ -61,7 +62,17 @@ export default {
     },
 
     async updateGuild(req, res) {
-        await Guild.findByIdAndUpdate(req.params._id, { $set: req.body })
+        ////await Guild.findByIdAndUpdate(req.params._id, { $set: req.body })
+        await Guild.findByIdAndUpdate(req.params.id, { 
+            $set: {
+                "name": req.body.name,
+                "icon": req.body.icon,
+                "owner_id": req.body.owner_id,
+                "system_channel_id": req.body.system_channel_id,
+                "vanity_url": req.body.vanity_url,
+                "banner": req.body.banner
+            }
+        })
         .exec()
         .then(result => res.status(200).send({
             result,
@@ -71,7 +82,7 @@ export default {
     },
 
     async deleteGuild(req, res) {
-        await Guild.findByIdAndDelete(req.params._id)
+        await Guild.findByIdAndDelete(req.params.id)
         .exec()
         .then(result => res.status(200).send({
             result,
