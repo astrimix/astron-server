@@ -1,12 +1,13 @@
 import { Router } from "express";
-import GuildController from "#app/controllers/user/guild.controller.js";
 
 export default () => {
     const api = Router({
         mergeParams: true
     });
 
-    
+    api.get("/:id", GuildController.getGuildMember)
+
+    api.get("/", GuildController.listGuildMembers)
 
     return api;
 }

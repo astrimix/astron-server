@@ -3,10 +3,17 @@ import mongoose from "mongoose";
 const memberSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        required: true
     },
-    nickname: String,
-    avatar_hash: String
+    nickname: {
+        type: String,
+        required: false
+    },
+    avatar: {
+        type: String,
+        required: false
+    }
 }, {
     timestamps: {
         createdAt: "joined_at",

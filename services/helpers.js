@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import JwtDecode from "jwt-decode";
 
 function createPassword(request) {
     let salt = crypto.randomBytes(16).toString("base64");
@@ -9,4 +10,8 @@ function createPassword(request) {
     request.body.password = salt + "$" + hash;
 }
 
-export { createPassword }
+function getMe(request) {
+    return JwtDecode(request.headers.authorization.split(' ')[1]).id;
+}
+
+export { createPassword, getMe }

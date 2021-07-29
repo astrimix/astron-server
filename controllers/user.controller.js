@@ -1,11 +1,7 @@
-import { createPassword } from "../services/helpers.js";
+import { createPassword, getMe } from "../services/helpers.js";
 import User from "../models/user.model.js";
 import Guild from "../models/guild.model.js";
 import JwtDecode from "jwt-decode";
-
-function getMe(request) {
-    return JwtDecode(request.headers.authorization.split(' ')[1]).id;
-}
 
 export default {
     async findMe(req, res) {
@@ -32,7 +28,15 @@ export default {
     async updateMe(req, res) {
         if (req.body.password != null) createPassword(req);
 
-        await User.findByIdAndUpdate(getMe(req), { $set: req.body }, { new: true })
+        await User.findByIdAndUpdate(getMe(req), { 
+            $set: { 
+                "username": req.body.username,
+                "discriminator": req.body.discriminator,
+                "avatar_hash": req.body.avatar_hash,
+                "email": req.body.email,
+                "password": req.body.password
+            }
+        }, { new: true })
         .then(result => res.status(200).send(result))
         .catch(error => res.status(500).send(error));
     },
@@ -40,7 +44,15 @@ export default {
     async updateUser(req, res) {
         if (req.body.password != null) createPassword(req);
 
-        await User.findByIdAndUpdate(req.params._id, { $set: req.body })
+        await User.findByIdAndUpdate(req.params._id, { 
+            $set: { 
+                "username": req.body.username,
+                "discriminator": req.body.discriminator,
+                "avatar_hash": req.body.avatar_hash,
+                "email": req.body.email,
+                "password": req.body.password
+            }
+        })
         .then(result => res.status(200).send(result))
         .catch(error => res.status(500).send(error));
     },
@@ -50,22 +62,4 @@ export default {
         .then(result => res.status(200).send({ result, message: `User ${req.params._id} has been deleted.` }))
         .catch(error => res.status(500).send(error));
     },
-
-    // TODO: Finish the rest of the requests
-
-    findMyGuilds(req, res) {
-        return res.status(500).send("WIP");
-    },
-
-    findUserGuilds(req, res) {
-        return res.status(500).send("WIP");
-    },
-
-    findGuildById(req, res) {
-        return res.status(500).send("WIP");
-    },
-
-    deleteFromGuild(req,res) {
-        return res.status(500).send("WIP");
-    }
 }
