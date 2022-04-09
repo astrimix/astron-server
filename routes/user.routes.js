@@ -1,43 +1,29 @@
 import { Router } from "express";
 import { MeRouter, UserRouter } from "./user/guild.routes.js";
-import UserController from "../controllers/user.controller.js";
+import { UserController } from "../controllers/index.js";
 
 export default () => {
-    const api = Router();
+  const api = Router();
 
-    /**
-     * GET /users/@me
-     * * Scope: Any
-     */
-    api.get("/@me", UserController.findMe);
+  api.get("/@me", UserController.findMe);
+  api.get("/:id", UserController.findUserById);
+  api.get();
 
-    /**
-     * GET /users/_id
-     * * Scope: Any
-     */
-    api.get("/:_id", UserController.findUserById);
+  // // api.patch("/@me", UserController.updateMe);
 
-    /**
-     * PATCH /users/@me
-     * * Scope: Any
-     * @param username, @param avatar 
-     */
-    api.patch("/@me", UserController.updateMe);
+  // api.patch("/:id", UserController.updateUser);
 
-    /**
-     * PATCH /users/_id
-     * * Scope: Administrator
-     */
-    api.patch("/:_id", UserController.updateUser);
+  // api.delete("/:id", UserController.deleteUser);
 
-    /**
-     * DELETE /users/_id
-     * * Scope: Administator
-     */
-    api.delete("/:_id", UserController.deleteUser);
+  // api.use("/@me/guilds", MeRouter());
+  // api.use("/:_id/guilds", UserRouter());
 
-    api.use("/@me/guilds", MeRouter())
-    api.use("/:_id/guilds", UserRouter())
+  /* 
+  get me
+  get user
+  
+  
+  */
 
-    return api;
-}
+  return api;
+};

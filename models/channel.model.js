@@ -2,34 +2,26 @@ import mongoose from "mongoose";
 import { userSchema } from "./user.model.js";
 
 const channelSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: false
-    },
-    type: {
-        type: Number,
-        required: true
-    },
-    guild_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: false
-    },
-    position: {
-        type: Number,
-        required: false
-    },
-    topic: {
-        type: String,
-        required: false
-    },
+  name: {
+    required: true,
+    type: String,
+  },
 
-    recipients: [userSchema],
-    icon: {
-        type: String,
-        required: false
-    }
-}, {
-    versionKey: "version"
+  type: {
+    required: true,
+    type: Number,
+  },
+
+  guild_id: mongoose.Schema.Types.ObjectId,
+
+  position: Number,
+
+  topic: String,
+
+  recipients: [userSchema],
+
+  icon: String,
 });
 
 export default mongoose.model("Channel", channelSchema);
+export { channelSchema };

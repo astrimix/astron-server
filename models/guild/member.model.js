@@ -1,25 +1,18 @@
 import mongoose from "mongoose";
 
-const memberSchema = mongoose.Schema({
+const memberSchema = mongoose.Schema(
+  {
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    nickname: {
-        type: String,
-        required: false
-    },
-    avatar: {
-        type: String,
-        required: false
-    }
-}, {
-    timestamps: {
-        createdAt: "joined_at",
-    },
-    versionKey: "version"
-});
 
-//export default mongoose.model("Member", memberSchema);
+    nick: String,
+
+    avatar: String,
+  },
+  { timestamps: true }
+);
+
 export { memberSchema };

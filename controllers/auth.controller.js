@@ -1,26 +1,36 @@
-import { createPassword } from "../services/helpers.js";
-import { opts } from "../services/passport.js";
-import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 
+import { UserModel } from "../models/index.js";
+import { generatePassword } from "../utils/helpers.js";
+
 export default {
-    async login(req, res) {
-        console.log(req.body)
+  async login(req, res) {
+    const token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET, {
+      expiresIn: 1200,
+    });
 
-        const token = jwt.sign(req.body, opts.secretOrKey, { expiresIn: 1200 });
+    return res.status(200).send({ token });
+  },
 
-        return res.status(200).send({ token });
-    },
+  async register(req, res) {
+    const { password, email, username } = req.body;
+    let passwordHash = generatePassword(password);
 
-    async register(req, res) {
-        createPassword(req);
+    let user = await UserModel.create({
+      username,
+      email,
+      password: passwordHash,
+    })
+      .exec()
+      .catch((error) => {
+        logger.log(
+          "AuthController",
+          "error",
+          `Error on executing query:\n\n${error}`
+        );
+        return res.status(500).send(`Error on executing query:\n\n${error}`);
+      });
 
-        userModel.create(req.body)
-        .then((result) => {
-            res.status(201).send({result, message: "New user has been created"})
-        })
-        .catch((error) =>{
-            res.status(400).send(error);
-        });
-    }
-}
+    return res.status(201).send({ user, message: "New user has been created" });
+  },
+};

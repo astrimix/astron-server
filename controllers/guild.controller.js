@@ -1,93 +1,111 @@
-import Guild from "../models/guild.model.js";
-import Channel from "../models/channel.model.js";
-
-import JwtDecode from "jwt-decode";
 import mongoose from "mongoose";
+import { logger } from "../main.js";
+import { GuildModel } from "../models/index.js";
+import { getCurrentUser } from "../utils/helpers.js";
 
 export default {
-    async createGuild(req, res) {
-        const decoded = JwtDecode(req.headers.authorization.split(' ')[1]);
-        const guildId = mongoose.Types.ObjectId();
-        let channelIds = [];
+  async createGuild(req, res) {
+    const currentUser = getCurrentUser(req.headers.authorization);
 
-        await Channel.insertMany([
-            { name: "general", guild_id: guildId },
-            { name: "off-topic", guild_id: guildId }
-        ])
-        .then(result => {
-            for (let channel of result) {
-                channelIds.push(channel._id);
-            }
-        })
-        .catch(error => res.status(500).send(error));
+    let guild = await GuildModel.create({
+      _id: mongoose.Types.ObjectId(),
+      name: req.body.name,
+      ownerId: currentUser,
+      channels: [
+        { name: "general", type: 1 },
+        { name: "off-topic", type: 1 },
+      ],
+      members: [{ user: { _id: currentUser } }],
+    });
 
-        await Guild.create({
-            _id: guildId,
-            name: req.body.name,
-            owner_id: decoded.id,
-            system_channel_id: channelIds[0],
-            member_count: 1,
-            members: [{
-                user: {
-                    _id: decoded.id
-                },
-            }],
-            channels: channelIds,
-            max_members: 100
+    guild
+      .populate("ownerId", "_id username discriminator")
+      .then(() => guild.populate("channels"))
+      .then(() =>
+        guild.populate({
+          path: "members",
+          populate: {
+            path: "user",
+            select: "_id username discriminator",
+          },
         })
-        .then(guild => {
-            guild.populate({
-                path: "members",
-                populate: { 
-                    path: "user",
-                    select: "-password"
-                }
-            })
-            .populate("channels")
-            .execPopulate()
-            .then(result => res.status(200).send(result))
-            .catch(error => res.status(500).send(error));    
-        })
-        .catch(error => res.status(500).send(error));
-    },
+      )
+      .catch((error) => {
+        logger.log(
+          "GuildController",
+          "error",
+          `Error on executing query:\n\n${error}`
+        );
+        return res.status(500).send(`Error on executing query:\n\n${error}`);
+      })
+      .then((result) => res.status(200).send(result));
+  },
 
-    async findGuild(req, res) {
-        await Guild.findById(req.params.id)
-        .exec()
-        .then(result => {
-            if (result == null) return res.status(404);
-            return res.status(200).send(result);
-        })
-        .catch(error => res.status(500).send(error));
-    },
+  async findGuild(req, res) {
+    await GuildModel.findById(req.params.id)
+      .exec()
+      .catch((error) => {
+        logger.log(
+          "GuildController",
+          "error",
+          `Error on executing query:\n\n${error}`
+        );
+        return res.status(500).send(`Error on executing query:\n\n${error}`);
+      })
+      .then((result) => {
+        if (result == null) {
+          return res.status(404);
+        } else {
+          return res.status(200).send(result);
+        }
+      });
+  },
 
-    async updateGuild(req, res) {
-        ////await Guild.findByIdAndUpdate(req.params._id, { $set: req.body })
-        await Guild.findByIdAndUpdate(req.params.id, { 
-            $set: {
-                "name": req.body.name,
-                "icon": req.body.icon,
-                "owner_id": req.body.owner_id,
-                "system_channel_id": req.body.system_channel_id,
-                "vanity_url": req.body.vanity_url,
-                "banner": req.body.banner
-            }
+  async updateGuild(req, res) {
+    await GuildModel.findByIdAndUpdate(req.params.id, {
+      $set: {
+        name: req.body.name,
+        icon: req.body.icon,
+        owner_id: req.body.owner_id,
+      },
+    })
+      .exec()
+      .catch((error) => {
+        logger.log(
+          "GuildController",
+          "error",
+          `Error on executing query:\n\n${error}`
+        );
+        return res.status(500).send(`Error on executing query:\n\n${error}`);
+      })
+      .then((result) =>
+        res.status(200).send({
+          result,
+          message: `Guild ${result._id} has been successfully updated.`,
         })
-        .exec()
-        .then(result => res.status(200).send({
+      );
+  },
+
+  async deleteGuild(req, res) {
+    await GuildModel.findByIdAndDelete(req.params.id)
+      .exec()
+      .catch((error) => {
+        logger.log(
+          "GuildController",
+          "error",
+          `Error on executing query:\n\n${error}`
+        );
+        return res.status(500).send(`Error on executing query:\n\n${error}`);
+      })
+      .then((result) => {
+        if (result == null) {
+          return res.status(404);
+        } else {
+          return res.status(200).send({
             result,
-            message: `Guild ${result._id} has been successfully updated.`
-        }))
-        .catch(error => res.status(500).send(error));
-    },
-
-    async deleteGuild(req, res) {
-        await Guild.findByIdAndDelete(req.params.id)
-        .exec()
-        .then(result => res.status(200).send({
-            result,
-            message: `Guild ${result._id} has been successfully deleted.`
-        }))
-        .catch(error => res.status(404).send(error));
-    }
-}
+            message: `Guild ${result._id} has been successfully deleted.`,
+          });
+        }
+      });
+  },
+};

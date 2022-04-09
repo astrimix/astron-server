@@ -1,16 +1,12 @@
 import { Router } from "express";
-
-import authController from "../controllers/auth.controller.js";
-import compareUser from "../services/compareUser.js"
+import { verifyCurrentUser } from "../utils/helpers.js";
+import { AuthController } from "../controllers/index.js";
 
 export default () => {
-    const api = Router();
+  const api = Router();
 
-    // POST /auth/login
-    api.post("/login", [compareUser.isPasswordAndUserMatch, authController.login]);
+  api.post("/login", [verifyCurrentUser, AuthController.login]);
+  api.post("/register", AuthController.register);
 
-    // POST /auth/register
-    api.post("/register", authController.register);
-
-    return api;
-}
+  return api;
+};
