@@ -1,38 +1,17 @@
+// TODO: User leaves guild
+// TODO: List user guilds
+// TODO: User joins guild
+
 import { Router } from "express";
-import GuildController from "#app/controllers/user/guild.controller.js";
+import { UserController, GuildController } from "../../controllers/index.js";
 
-let MeRouter = () => {
-    const api = Router({
-        mergeParams: true
-    });
+export default () => {
+  const api = Router({ mergeParams: true });
 
-    /**
-     * GET /users/@me/guilds
-     * * Scope: Any
-     */
-    api.get("/", GuildController.findMyGuilds);
-    
-    /**
-     * DELETE /users/@me/guilds/_id
-     * * Scope: Any
-     */
-    api.delete("/:_id", GuildController.deleteFromGuild);
+  api.get("/", UserController.listAllGuilds);
+  api.get("/:id", GuildController.getGuild);
+  api.post("/:id", UserController.joinGuild);
+  api.delete("/:id", UserController.leaveGuild);
 
-    return api;
-}
-
-let UserRouter = () => {
-    const api = Router({
-        mergeParams: true
-    });
-
-    /**
-     * GET /users/_id/guilds
-     * * Scope: Administrator
-     */
-    api.get("/", GuildController.findUserGuilds);
-
-    return api;
-}
-
-export { UserRouter, MeRouter }
+  return api;
+};

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyCurrentUser } from "../utils/helpers.js";
+import { verifyCurrentUser } from "../utils/index.js";
 import { AuthController } from "../controllers/index.js";
 
 export default () => {

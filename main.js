@@ -1,31 +1,26 @@
 import express from "express";
+import { Server as HTTPServer } from "http";
 import { Server as SocketServer } from "socket.io";
-import { Server as HttpServer } from "http";
-
 import {
-  EventService,
+  Express,
   Logger,
-  MongoService,
-  PassportService,
-  ExpressService,
-  DocsService,
+  MongoDB,
+  Passport,
+  Events,
 } from "./services/index.js";
 
-const expressApp = express();
-const httpServer = new HttpServer();
-const socketServer = new SocketServer(httpServer);
+const server = new HTTPServer();
+const ioServer = new SocketServer();
+const app = express();
 
-EventService.startListening(httpServer, socketServer);
-if (process.env.LOGGER === "true") {
-  var logger = new Logger();
-}
+const logger = new Logger();
+if (process.env.LOGGER === "true") logger.status = 1;
+Events.listen();
 
-const passport = PassportService.init();
-MongoService.start();
+MongoDB.start();
 
-ExpressService.start(expressApp, passport);
-DocsService.init(expressApp);
+let passport = Passport.init();
+Express.start(app, passport);
 
-httpServer.listen(3000);
-
-export { logger };
+server.listen(3000);
+export { logger, server, ioServer };

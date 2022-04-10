@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema(
       type: String,
     },
     discriminator: Number,
-    avatar_hash: String,
+    avatarHash: String,
     email: {
       required: true,
       type: String,

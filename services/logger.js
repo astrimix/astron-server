@@ -15,15 +15,12 @@ const getTimestamp = () => {
 class Logger {
   status = 0;
 
-  constructor() {
-    this.status = 1;
-  }
-
   log(serviceName, type, content) {
     if (this.status !== 1) return;
 
     console.log(
       `[${getTimestamp()}/${serviceName}] ${logLevel[type](content)}`
+      // ex. [17:00/MongoDB] Service started.
     );
     if (type === "fatal") return (process.exitCode = 1);
   }

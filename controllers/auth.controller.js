@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 
+import { logger } from "../main.js";
 import { UserModel } from "../models/index.js";
-import { generatePassword } from "../utils/helpers.js";
+import { generatePassword } from "../utils/index.js";
 
 export default {
   async login(req, res) {

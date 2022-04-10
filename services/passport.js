@@ -1,8 +1,7 @@
-import { Passport } from "passport/lib";
-const passport = new Passport();
+import passport from "passport";
 
 import { Strategy as JWTStrategy, ExtractJwt } from "passport-jwt";
-import { verifyJWTPayload } from "../utils/helpers.js";
+import { verifyJWTPayload } from "../utils/index.js";
 import { logger } from "../main.js";
 
 const options = {

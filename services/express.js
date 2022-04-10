@@ -9,25 +9,26 @@ import authRouter from "../routes/auth.routes.js";
 const api_version = "v1";
 
 export default {
-  start(expressApp, passport) {
+  start(app, passport) {
     try {
-      expressApp.use(express.json({ limit: "30mb" }));
-      expressApp.use(express.urlencoded({ limit: "30mb", extended: "true" }));
-      expressApp.use(cors());
+      app.use(express.json({ limit: "30mb" }));
+      app.use(express.urlencoded({ limit: "30mb", extended: "true" }));
+      app.use(cors());
 
-      expressApp.use(`/api/${api_version}/auth`, authRouter());
-      expressApp.use(
+      app.use(`/api/${api_version}/auth`, authRouter());
+      app.use(
         `/api/${api_version}/users`,
         passport.authenticate("jwt", { session: false }),
         userRouter()
       );
-      //app.use(`/api/${api_version}/guilds`, passport.authenticate("jwt", { session: false }), guildRouter());
-      expressApp.use(`/api/${api_version}/guilds`, guildRouter());
 
-      return logger.log("info", "ExpressService: ready");
+      //app.use(`/api/${api_version}/guilds`, passport.authenticate("jwt", { session: false }), guildRouter());
+      app.use(`/api/${api_version}/guilds`, guildRouter());
+
+      return logger.log("info", "Express: Service started");
     } catch (error) {
       return logger.log(
-        "ExpressService",
+        "Express",
         "fatal",
         `Error on initializing the service:\n\n${error}`
       );
