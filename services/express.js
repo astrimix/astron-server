@@ -2,36 +2,27 @@ import express from "express";
 import cors from "cors";
 
 import { logger } from "../main.js";
-import userRouter from "../routes/user.routes.js";
-import guildRouter from "../routes/guild.routes.js";
-import authRouter from "../routes/auth.routes.js";
-
-const api_version = "v1";
+import { AuthRouter, UserRouter } from "../routes/index.js";
 
 export default {
-  start(app, passport) {
-    try {
+  middlewares: {
+    init: (app) => {
       app.use(express.json({ limit: "30mb" }));
       app.use(express.urlencoded({ limit: "30mb", extended: "true" }));
       app.use(cors());
+      return logger.log("Express", "info", "Middlewares initialized");
+    },
+  },
 
-      app.use(`/api/${api_version}/auth`, authRouter());
+  router: {
+    init: (app, passport) => {
+      app.use(`/auth`, AuthRouter());
       app.use(
-        `/api/${api_version}/users`,
+        `/users`,
         passport.authenticate("jwt", { session: false }),
-        userRouter()
+        UserRouter()
       );
-
-      //app.use(`/api/${api_version}/guilds`, passport.authenticate("jwt", { session: false }), guildRouter());
-      app.use(`/api/${api_version}/guilds`, guildRouter());
-
-      return logger.log("info", "Express: Service started");
-    } catch (error) {
-      return logger.log(
-        "Express",
-        "fatal",
-        `Error on initializing the service:\n\n${error}`
-      );
-    }
+      return logger.log("Express", "info", "Router started");
+    },
   },
 };

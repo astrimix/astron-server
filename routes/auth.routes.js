@@ -5,8 +5,8 @@ import { AuthController } from "../controllers/index.js";
 export default () => {
   const api = Router();
 
-  api.post("/login", [verifyCurrentUser, AuthController.login]);
   api.post("/register", AuthController.register);
+  api.post("/login", [verifyCurrentUser, AuthController.login]);
 
   return api;
 };

@@ -6,15 +6,14 @@ import { logger } from "../main.js";
 
 const options = {
   secretOrKey: process.env.JWT_SECRET,
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  audience: "astronapp.com",
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // TODO: replace with cookie extractor
   algorithm: ["HS256"],
 };
 
 export default {
   init() {
     passport.use(new JWTStrategy(options, verifyJWTPayload));
-    logger.log("PassportService", "info", "Strategies initialized");
+    logger.log("Passport", "info", "Strategies initialized");
     return passport;
   },
 };

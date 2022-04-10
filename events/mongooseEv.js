@@ -1,22 +1,17 @@
 import mongoose from "mongoose";
-
-const msg = {
-  mongoose_error: "Connection error on stack: \n\n",
-  mongoose_accept: "Connection accepted!",
-  mongoose_close: "Connection closed!",
-  error: "An error has occured on stack: \n\n",
-};
+import { CONSTANTS } from "../utils/index.js";
+import { logger } from "../main.js";
 
 export default () => {
   mongoose.connection.on("connected", () =>
-    logger.log("MongoService", "info", msg.mongoose_accept)
+    logger.log("MongoService", "info", CONSTANTS.mongoose_accept)
   );
 
   mongoose.connection.on("error", (error) =>
-    logger.log("MongoService", "fatal", `${msg.mongoose_error}${error}`)
+    logger.log("MongoService", "fatal", CONSTANTS.mongoose_error(error))
   );
 
   mongoose.connection.on("disconnected", () =>
-    logger.log("MongoService", "warn", msg.mongoose_close)
+    logger.log("MongoService", "warn", CONSTANTS.mongoose_close)
   );
 };

@@ -1,6 +1,8 @@
-import { EventEmitter } from "events";
-import { ioServer } from "../main";
+import { logger } from "../main.js";
+import { CONSTANTS } from "../utils/index.js";
 
-ioServer.on("connection", (socket) => {});
-
-//const SocketEmitter = new EventEmitter();
+export default (server) => {
+  server.on("connection", () =>
+    logger.log("SocketIO", "info", CONSTANTS.socket_connect)
+  );
+};

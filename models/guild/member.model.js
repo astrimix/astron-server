@@ -1,18 +1,18 @@
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
-const memberSchema = mongoose.Schema(
-  {
-    user: {
-      required: true,
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+// const memberSchema = mongoose.Schema(
+//   {
+//     user: {
+//       required: true,
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "User",
+//     },
 
-    nick: String,
+//     nick: String,
 
-    avatar: String,
-  },
-  { timestamps: true }
-);
+//     avatar: String,
+//   },
+//   { timestamps: true }
+// );
 
-export { memberSchema };
+// export { memberSchema };

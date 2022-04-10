@@ -2,7 +2,7 @@ import * as argon2 from "argon2";
 import { UserModel } from "../models/index.js";
 import { logger } from "../main.js";
 
-export default (req, res, next) => {
+export default async (req, res, next) => {
   let user = await UserModel.findOne({ email: req.body.email })
     .exec()
     .catch((error) =>
@@ -33,7 +33,8 @@ export default (req, res, next) => {
       error: "Invalid email or password",
     });
   else {
-    req.body.id = user._id;
+    res.locals.user = user.toObject();
+    delete res.locals.user.password;
     return next();
   }
 };

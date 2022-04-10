@@ -6,8 +6,8 @@ import { generatePassword } from "../utils/index.js";
 
 export default {
   async login(req, res) {
-    const token = jwt.sign({ email: req.body.email }, process.env.JWT_SECRET, {
-      expiresIn: 1200,
+    const token = jwt.sign({ user: res.locals.user }, process.env.JWT_SECRET, {
+      expiresIn: "24h",
     });
 
     return res.status(200).send({ token });
@@ -15,23 +15,25 @@ export default {
 
   async register(req, res) {
     const { password, email, username } = req.body;
-    let passwordHash = generatePassword(password);
+    let passwordHash = await generatePassword(password);
 
     let user = await UserModel.create({
       username,
       email,
       password: passwordHash,
-    })
-      .exec()
-      .catch((error) => {
-        logger.log(
-          "AuthController",
-          "error",
-          `Error on executing query:\n\n${error}`
-        );
-        return res.status(500).send(`Error on executing query:\n\n${error}`);
-      });
+    }).catch((error) => {
+      logger.log(
+        "AuthController",
+        "error",
+        `Error on executing query:\n\n${error}`
+      );
+      return res.status(500).send(`Error on executing query:\n\n${error}`);
+    });
 
-    return res.status(201).send({ user, message: "New user has been created" });
+    delete user.password;
+    console.log(user);
+    return res
+      .status(201)
+      .send({ message: "A new user has been created.", user });
   },
 };

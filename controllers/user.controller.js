@@ -3,19 +3,19 @@ import { generatePassword, isMe } from "../utils/index.js";
 
 export default {
   async findUserById(req, res) {
-    await UserModel.findById(isMe(req))
-      .catch((error) => res.status(500).send(error))
-      .then((result) => {
-        if (result == null) return res.status(404);
-        return res.status(200).send(result);
-      });
+    let user = await UserModel.findById(isMe(req))
+      .exec()
+      .catch((error) => res.status(500).send(error));
+
+    if (!user) return res.status(404);
+    return res.status(200).send(user);
   },
 
   async updateUser(req, res) {
-    const { username, password, discriminator, email } = req.body;
-    if (password !== null) generatePassword(password);
+    const { username, discriminator, email, password } = req.body;
+    if (password !== null) await generatePassword(password);
 
-    await UserModel.findByIdAndUpdate(isMe(req), {
+    let user = await UserModel.findByIdAndUpdate(isMe(req), {
       $set: {
         username: username,
         discriminator: discriminator,
@@ -25,26 +25,28 @@ export default {
       },
     })
       .exec()
-      .catch((error) => res.status(500).send(error))
-      .then((result) => res.status(200).send(result));
+      .catch((error) => res.status(500).send(error));
+
+    return res
+      .status(200)
+      .send({ user, message: "User has been sucessfully updated. " });
   },
 
   async deleteUser(req, res) {
     await UserModel.findByIdAndDelete(isMe(req))
       .exec()
-      .catch((error) => res.status(500).send(error))
-      .then((result) =>
-        res
-          .status(200)
-          .send({ result, message: `User ${req.params._id} has been deleted.` })
-      );
+      .catch((error) => res.status(500).send(error));
+
+    return res
+      .status(200)
+      .send({ message: `User ${req.params.id} has been deleted.` });
   },
 
-  async listAllGuilds(req, res) {
-    await UserModel.findById(isMe(req))
-      .exec()
-      .then(({ guilds }) => {
-        res.status(200).send({ guilds });
-      });
-  },
+  // async listAllGuilds(req, res) {
+  //   await UserModel.findById(isMe(req))
+  //     .exec()
+  //     .then(({ guilds }) => {
+  //       res.status(200).send({ guilds });
+  //     });
+  // },
 };

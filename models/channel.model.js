@@ -1,27 +1,27 @@
-import mongoose from "mongoose";
-import { userSchema } from "./user.model.js";
+// import mongoose from "mongoose";
+// import { userSchema } from "./user.model.js";
 
-const channelSchema = mongoose.Schema({
-  name: {
-    required: true,
-    type: String,
-  },
+// const channelSchema = mongoose.Schema({
+//   name: {
+//     required: true,
+//     type: String,
+//   },
 
-  type: {
-    required: true,
-    type: Number,
-  },
+//   type: {
+//     required: true,
+//     type: Number,
+//   },
 
-  guild_id: mongoose.Schema.Types.ObjectId,
+//   guild_id: mongoose.Schema.Types.ObjectId,
 
-  position: Number,
+//   position: Number,
 
-  topic: String,
+//   topic: String,
 
-  recipients: [userSchema],
+//   recipients: [userSchema],
 
-  icon: String,
-});
+//   icon: String,
+// });
 
-export default mongoose.model("Channel", channelSchema);
-export { channelSchema };
+// export default mongoose.model("Channel", channelSchema);
+// export { channelSchema };

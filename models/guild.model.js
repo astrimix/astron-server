@@ -1,35 +1,35 @@
-import mongoose from "mongoose";
-import { channelSchema } from "./channel.model.js";
+// import mongoose from "mongoose";
+// import { channelSchema } from "./channel.model.js";
 
-const guildSchema = mongoose.Schema(
-  {
-    name: {
-      required: true,
-      type: String,
-    },
+// const guildSchema = mongoose.Schema(
+//   {
+//     name: {
+//       required: true,
+//       type: String,
+//     },
 
-    icon: String,
+//     icon: String,
 
-    owner_id: {
-      required: true,
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+//     owner_id: {
+//       required: true,
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "User",
+//     },
 
-    channels: [channelSchema],
+//     channels: [channelSchema],
 
-    members: [{ type: mongoose.Schema.Types.ObjectId, ref: "Member" }],
+//     members: [{ type: mongoose.Schema.Types.ObjectId, ref: "Member" }],
 
-    // permissions: Array,
-    // roles: Array,
-    // emojis: Array,
-    // system_channel_id: mongoose.Schema.Types.ObjectId,
-    // member_count: Number,
-    // max_members: Number,
-    // vanity_url: String,
-    // banner: String,
-  },
-  { timestamps: true }
-);
+//     // permissions: Array,
+//     // roles: Array,
+//     // emojis: Array,
+//     // system_channel_id: mongoose.Schema.Types.ObjectId,
+//     // member_count: Number,
+//     // max_members: Number,
+//     // vanity_url: String,
+//     // banner: String,
+//   },
+//   { timestamps: true }
+// );
 
-export default mongoose.model("Guild", guildSchema);
+// export default mongoose.model("Guild", guildSchema);

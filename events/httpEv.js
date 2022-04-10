@@ -1,24 +1,18 @@
-import { server } from "../main";
+import { CONSTANTS } from "../utils/index.js";
+import { logger } from "../main.js";
 
-const msg = {
-  server_start: (addr, port) =>
-    `Server running on port ${addr || "*"}:${port}!`,
-  server_stop: "Connection terminated.",
-  error: "An error has occured on stack: \n\n",
-};
+export default (server) => {
+  //const { address, port } = server.address();
 
-export default () => {
   server.on("listening", () =>
-    logger.log(
-      "HTTP Server",
-      "info",
-      msg.server_start(server.address().address, server.address().port)
-    )
+    logger.log("HTTP Server", "info", CONSTANTS.server_start("*", "3000"))
   );
+
   server.on("close", () =>
-    logger.log("HTTP Server", "info", "Connection terminated")
+    logger.log("HTTP Server", "info", CONSTANTS.server_stop)
   );
+
   server.on("error", (error) =>
-    logger.log("HTTP Server", "error", `${msg.error}${error}`)
+    logger.log("HTTP Server", "error", CONSTANTS.error(error))
   );
 };

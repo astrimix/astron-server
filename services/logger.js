@@ -12,18 +12,17 @@ const getTimestamp = () => {
   return new Date().toLocaleString("pl-PL", { timeStyle: "long" });
 };
 
-class Logger {
+export default class Logger {
   status = 0;
 
   log(serviceName, type, content) {
     if (this.status !== 1) return;
-
     console.log(
-      `[${getTimestamp()}/${serviceName}] ${logLevel[type](content)}`
+      `${chalk.gray(`[${getTimestamp()}/${serviceName}]`)} ${logLevel[type](
+        content
+      )}`
       // ex. [17:00/MongoDB] Service started.
     );
     if (type === "fatal") return (process.exitCode = 1);
   }
 }
-
-export default Logger;
